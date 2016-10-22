@@ -1,6 +1,8 @@
 --FrameWork
 local EventFrame = CreateFrame("Frame")
+local whisperFrame = CreateFrame("Frame")
 EventFrame:RegisterEvent("MERCHANT_SHOW")
+whisperFrame:RegisterEvent("CHAT_MSG_WHISPER")
 
 --ScriptSet (Automatic Repair)
 EventFrame:SetScript("OnEvent", function(self, event, ...)
@@ -39,3 +41,17 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 	
 end)
 
+--ScriptSet (Automatic Reply)
+
+local function eventHandler(self, event, ...)
+	local arg1, arg2 = ...;
+	local OtherPlayer = arg2;
+	local message = "Coin cost is 3k, Grump cost is 60k. Can negotiate"
+	local contacts = list
+	
+	SendChatMessage("This is a test", "WHISPER", "Common", OtherPlayer)
+end
+whisperFrame:SetScript("OnEvent", eventHandler)
+
+
+	
