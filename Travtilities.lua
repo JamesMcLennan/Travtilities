@@ -1,7 +1,11 @@
 --FrameWork
+
+--Autorepair
 local EventFrame = CreateFrame("Frame")
-local whisperFrame = CreateFrame("Frame")
 EventFrame:RegisterEvent("MERCHANT_SHOW")
+
+--Autoreply
+local whisperFrame = CreateFrame("Frame")
 whisperFrame:RegisterEvent("CHAT_MSG_WHISPER")
 
 --ScriptSet (Automatic Repair)
@@ -32,7 +36,6 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
         if (money > cost) then
           RepairAllItems()
           print(format("|cffead000Repair cost: %.1fg|r", cost * 0.0001))
-          SendChatMessage(UnitName("Player").." just repaired. It cost "..cost * 0.0001 .."g because you failed. Current balance remaining: "..(money-cost) * 0.0001 .."g.", "SAY", "Common", "1")
         else
           print("You're broke. You cannot repair.")
         end
@@ -42,38 +45,57 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 --ScriptSet (Automatic Reply)
-SLASH_TRAVAUTOREPLY = '/travautoreply'
+local toggle = true
 
-local message = nil
-local list = nil
+local function slashHandler(msg, editbox)
+	if (msg == 'on') then -- Player turns autoreply ON
+		toggle = true;
+		ChatFrame1:AddMessage('Autoreply enabled.')
+	elseif (msg == 'off') then -- Player turns autoreply OFF
+		toggle = false;
+		ChatFrame1:AddMessage('Autoreply disabled.')
+	else
+		message = msg -- Player SETS autoreply message
+		list = nil;
+		ChatFrame1:AddMessage('New message set.')
+	end
+end
+
+SLASH_TRAVTILITIES1 = '/trav'
+
+SlashCmdList["TRAVTILITIES"] = slashHandler; 
 
 local function eventHandler(self, event, ...)
   local arg1, arg2 = ...;
   local OtherPlayer = arg2;
+  local player, realm = strsplit("-", OtherPlayer, 2)
+  local count = 1;
+  list = list or {};
+  found = false;
+  
+  print("Travtilities - You've recevied a whisper.")
+  --Check recent players that have recevied an autoreply message.
+  if toggle == true then
+	for i = 1, 100 do
+		if list[i] ~= nil then
+			if list[i] == player then
+				found = true
+				break
+			end
+			count = i;
+		end
+	end
 
-  --Check contacts
-  while list do
-    if list.value ~= OtherPlayer then
-      list = list.next
-    else
-      return PlayerAlreadyReceivedResponse
-    end
-  end
-
-  if list == nil then
-    list = {next = list, value = OtherPlayer}
-  end
-
-  if message ~= nil then
-    SendChatMessage(message, "WHISPER", "Common", OtherPlayer)
-  else
-    ChatFrame1:AddMessage('You have not set auto reply.')
-  end
-
-end
-
-function SlashCmdList.TRAVAUTOREPLY(msg, editbox)
-  message = msg
+	if found == false then
+		if message ~= nil then
+			SendChatMessage(message, "WHISPER", "Common", player)
+			list[count+1] = player;
+			found = true;
+		else
+			ChatFrame1:AddMessage('You have not set auto reply.')
+		end
+	end
+ end
 end
 
 whisperFrame:SetScript("OnEvent", eventHandler)

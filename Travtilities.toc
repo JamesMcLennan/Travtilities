@@ -1,6 +1,7 @@
-## Interface: 70000
+## Interface: 70100
 ## Title: Travtilities
-## Author: Travis @ Barthalis
-## Version: 0.1
+## Author: Travruid @ Barthalis
+## Version: 0.2
+## SavedVariables: message, list, found
 
 Travtilities.lua
