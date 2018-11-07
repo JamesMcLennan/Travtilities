@@ -2,8 +2,8 @@
 World of Warcraft Addons
 
 # Goals
-1. Implement UI
-1.1 Ability to write Autoreply text into textbox
+1. Implement UI\n
+1.1 Ability to write Autoreply text into textbox\n
 1.2 Ability to check settings in UI (Settings such as on/off)
 
 2. Popup message UI list
